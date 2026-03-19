@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Spot;
+use App\Entity\MapPoint;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Spot>
+ * @extends ServiceEntityRepository<MapPoint>
  */
-class SpotRepository extends ServiceEntityRepository
+class MapPointRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Spot::class);
+        parent::__construct($registry, MapPoint::class);
     }
 
     //    /**
-    //     * @return Spot[] Returns an array of Spot objects
+    //     * @return MapPoint[] Returns an array of MapPoint objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
+    //            ->orderBy('m.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Spot
+    //    public function findOneBySomeField($value): ?MapPoint
     //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
+    //        return $this->createQueryBuilder('m')
+    //            ->andWhere('m.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

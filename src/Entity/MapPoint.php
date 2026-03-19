@@ -2,23 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\SpotRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\MapPointRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SpotRepository::class)]
-class Spot
+#[ORM\Entity(repositoryClass: MapPointRepository::class)]
+class MapPoint
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
 
     #[ORM\Column]
     private ?float $latitude = null;
@@ -26,33 +19,12 @@ class Spot
     #[ORM\Column]
     private ?float $longitude = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $label = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
     }
 
     public function getLatitude(): ?float
@@ -75,6 +47,18 @@ class Spot
     public function setLongitude(float $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(string $label): static
+    {
+        $this->label = $label;
 
         return $this;
     }
