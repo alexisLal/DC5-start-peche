@@ -3,4 +3,124 @@
 {% block title %}Accueil
 {% endblock %}
 
-{% block body %}{% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+	<style>
+		#map {
+			height: 500px;
+			width: 100%;
+			border-radius: 8px;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="p-4 flex">
+		<div
+			class="w-1/2">
+			{# Contrôles de la carte #}
+			<div class="mb-3 flex gap-2 items-center">
+				<input type="text" id="label-input" placeholder="Nom du point" class="border border-gray-300 rounded px-3 py-2 text-sm"/>
+				<button onclick="enableAddMode()" class="bg-blue-500 text-white font-bold px-4 py-2 rounded text-sm">
+					📍 Ajouter un point
+				</button>
+				<span id="add-hint" class="text-gray-500 text-sm" style="display:none">
+					Cliquez sur la carte pour placer le point
+				</span>
+			</div>
+
+			{# La carte #}
+			<div id="map"></div>
+		</div>
+
+		<div class="w-1/2 flex justify-end">
+			<a class="bg-blue-500 text-white font-bold p-4 rounded" href="{{ path('app_logout') }}">
+				Se déconnecter
+			</a>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const map = L.map('map').setView([
+48.8566, 2.3522
+], 8);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '© OpenStreetMap contributors'}).addTo(map);
+
+let addMode = false;
+const markers = {};
+
+async function loadPoints() {
+const res = await fetch('/api/map/points');
+const points = await res.json();
+points.forEach(addMarkerToMap);
+}
+
+function addMarkerToMap(point) {
+const marker = L.marker([point.latitude, point.longitude]).addTo(map).bindPopup(`
+                        <b>${
+point.label
+}</b><br>
+                        <button onclick="deletePoint(${
+point.id
+})">🗑️ Supprimer</button>
+                    `);
+markers[point.id] = marker;
+}
+
+window.enableAddMode = function () {
+const label = document.getElementById('label-input').value.trim();
+if (! label) {
+alert('Veuillez entrer un nom pour le point.');
+return;
+}
+addMode = true;
+document.getElementById('add-hint').style.display = 'inline';
+};
+
+map.on('click', async function (e) {
+if (! addMode) 
+return;
+
+
+
+const label = document.getElementById('label-input').value.trim();
+const {lat, lng} = e.latlng;
+
+const res = await fetch('/api/map/points', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify(
+{latitude: lat, longitude: lng, label}
+)
+});
+
+if (res.ok) {
+const data = await res.json();
+addMarkerToMap({id: data.id, latitude: lat, longitude: lng, label});
+document.getElementById('label-input').value = '';
+document.getElementById('add-hint').style.display = 'none';
+addMode = false;
+}
+});
+
+window.deletePoint = async function (id) {
+const res = await fetch (`/api/map/points/${id}`, {method: 'DELETE'});
+if (res.ok) {
+map.removeLayer(markers[id]);
+delete markers[id];
+}
+};
+
+loadPoints();
+});
+	</script>
+{% endblock %}

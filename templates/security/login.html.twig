@@ -20,10 +20,18 @@
 				<p class="text-gray-500 mt-2">Connectez-vous à votre espace</p>
 			</div>
 
+			{% if error %}
+				<div class="px-8 pb-4">
+					<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+						<span class="block sm:inline">{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+					</div>
+				</div>
+			{% endif %}
+
 			<!-- Form Section -->
 			<div class="px-8 pb-10">
 				<form
-					method="post" action="#">
+					method="post" action="{{ path('app_login') }}">
 
 					<!-- Email Input -->
 					<div class="mb-6">
@@ -34,7 +42,7 @@
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
 								</svg>
 							</div>
-							<input type="email" id="username" name="_username" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 shadow-sm text-gray-900 placeholder-gray-400 sm:text-sm" placeholder="exemple@email.com" required>
+							<input type="email" id="username" name="_username" value="{{ last_username }}" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 shadow-sm text-gray-900 placeholder-gray-400 sm:text-sm" placeholder="exemple@email.com" required autofocus>
 						</div>
 					</div>
 
@@ -59,10 +67,10 @@
 							<input type="checkbox" name="_remember_me" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer">
 							<span class="ml-2 text-sm text-gray-600 select-none">Se souvenir de moi</span>
 						</label>
-
-						<!-- Optional: Link for forgot password if needed -->
-						<!-- <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500">Oublié ?</a> -->
 					</div>
+
+					<input
+					type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
 					<!-- Submit Button -->
 					<button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
