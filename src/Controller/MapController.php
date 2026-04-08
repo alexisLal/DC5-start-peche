@@ -23,6 +23,7 @@ class MapController extends AbstractController
             'latitude'  => $p->getLatitude(),
             'longitude' => $p->getLongitude(),
             'label'     => $p->getLabel(),
+            'description' => $p->getDescription(),
         ], $points);
 
         return $this->json($data);
@@ -41,6 +42,7 @@ class MapController extends AbstractController
         $point->setLatitude($body['latitude']);
         $point->setLongitude($body['longitude']);
         $point->setLabel($body['label']);
+        $point->setDescription($body['description']);
 
         $em->persist($point);
         $em->flush();
